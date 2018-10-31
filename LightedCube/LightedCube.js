@@ -66,10 +66,20 @@ function main() {
 	gl.uniform3fv(u_LightDirection, lightDirection.elements);
 	gl.uniform3f(u_AmbientLight, 0.2, 0.2, 0.2);
 
-	var MvpMatrix = new Matrix4();
-	MvpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 100);
-	MvpMatrix.lookAt(3, 3, 7, 0, 0, 0, 0, 1, 0);
+    var modelMatrix = new Matrix4();
+    var MvpMatrix = new Matrix4();
+    var normalMatrix = new Matrix4();
+
+    modelMatrix.setTranslate(0, 0.9, 0);
+    modelMatrix.rotate(90, 0, 0, 1);
+    MvpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 100);
+    MvpMatrix.lookAt(modelMatrix);
 	gl.uniformMatrix4fv(u_MvpMatrix, false, MvpMatrix.elements);
+
+    normalMatrix.setInverseOf(modelMatrix);
+    normalMatrix.transpose();
+
+    gl.uniformMatrix4fv(u_NormalMatrix, false, normalMatrix.elements);
 
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);
