@@ -61,7 +61,7 @@ function main() {
 
 
 	gl.uniform3f(u_LightColor, 1.0, 1.0, 1.0);
-	var lightDirection = new Vector3([0.5, 3.0, 4.0]);
+	var lightDirection = new Vector3([0.0, 3.0, 4.0]);
 	lightDirection.normalize(); 
 	gl.uniform3fv(u_LightDirection, lightDirection.elements);
 	gl.uniform3f(u_AmbientLight, 0.2, 0.2, 0.2);
@@ -73,7 +73,8 @@ function main() {
     modelMatrix.setTranslate(0, 0.9, 0);
     modelMatrix.rotate(90, 0, 0, 1);
     MvpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 100);
-    MvpMatrix.lookAt(modelMatrix);
+    MvpMatrix.lookAt(3, 3, 7, 0, 0, 0, 0, 1, 0);
+    MvpMatrix.multiply(modelMatrix);
 	gl.uniformMatrix4fv(u_MvpMatrix, false, MvpMatrix.elements);
 
     normalMatrix.setInverseOf(modelMatrix);
