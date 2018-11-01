@@ -3,15 +3,18 @@
 	'attribute vec4 a_Color;\n' +
 	'attribute vec4 a_Normal;\n' +
 	'uniform mat4 u_MvpMatrix;\n' +
+	'uniform mat4 u_NormalMatrix;\n' +
 	'uniform vec3 u_LightColor;\n' +
 	'uniform vec3 u_LightDirection;\n' +
+	'uniform vec3 u_AmbientLight;\n' +
 	'varying vec4 v_Color;\n' +
 	'void main() {\n' +
 	'   gl_Position = u_MvpMatrix*a_Position;\n' +
-	'	vec3 normal = normalize(a_Normal.xyz);\n' +
+	'	vec3 normal = normalize(vec3(u_NormalMatrix * a_Normal));\n' +
 	'	float nDotL = max(dot(u_LightDirection, normal),0.0);\n' +
 	'	vec3 diffuse = u_LightColor * a_Color.rgb * nDotL;\n' +
-	'   v_Color = vec4(diffuse, a_Color.a);\n' +
+	'	vec3 ambient = u_AmbientLight * a_Color.rgb;\n'+
+	'   v_Color = vec4(diffuse+ambient, a_Color.a);\n' +
 	'}\n';
 
 var FSHADER_SOURCE =
@@ -46,25 +49,38 @@ function main() {
 	gl.enable(gl.DEPTH_TEST);
 
 	var u_MvpMatrix = gl.getUniformLocation(gl.program, 'u_MvpMatrix');
+	var u_NormalMatrix = gl.getUniformLocation(gl.program, 'u_NormalMatrix');
 	var u_LightColor = gl.getUniformLocation(gl.program, 'u_LightColor');
 	var u_LightDirection = gl.getUniformLocation(gl.program, 'u_LightDirection');
+	var u_AmbientLight = gl.getUniformLocation(gl.program, 'u_AmbientLight');
 
-	if (!u_MvpMatrix || !u_LightColor || !u_LightDirection ) {
+	if (!u_MvpMatrix || !u_LightColor || !u_LightDirection || !u_AmbientLight || !u_NormalMatrix) {
 		console.log('Failed to get the storage location of matrices.');
 		return;
 	}
 
 
 	gl.uniform3f(u_LightColor, 1.0, 1.0, 1.0);
-	var lightDirection = new Vector3([0.5, 3.0, 4.0]);
+	var lightDirection = new Vector3([0.0, 3.0, 4.0]);
 	lightDirection.normalize(); 
 	gl.uniform3fv(u_LightDirection, lightDirection.elements);
+	gl.uniform3f(u_AmbientLight, 0.2, 0.2, 0.2);
 
+    var modelMatrix = new Matrix4();
     var MvpMatrix = new Matrix4();
+    var normalMatrix = new Matrix4();
 
+    modelMatrix.setTranslate(0, 0.9, 0);
+    modelMatrix.rotate(90, 0, 0, 1);
     MvpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 100);
     MvpMatrix.lookAt(3, 3, 7, 0, 0, 0, 0, 1, 0);
+    MvpMatrix.multiply(modelMatrix);
 	gl.uniformMatrix4fv(u_MvpMatrix, false, MvpMatrix.elements);
+
+    normalMatrix.setInverseOf(modelMatrix);
+    normalMatrix.transpose();
+
+    gl.uniformMatrix4fv(u_NormalMatrix, false, normalMatrix.elements);
 
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);
