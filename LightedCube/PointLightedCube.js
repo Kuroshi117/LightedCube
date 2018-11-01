@@ -55,7 +55,7 @@ function main() {
     var u_NormalMatrix = gl.getUniformLocation(gl.program, 'u_NormalMatrix');
     var u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
     var u_LightColor = gl.getUniformLocation(gl.program, 'u_LightColor');
-    var u_LightPosition = gl.getUniformLocation(gl.program, 'u_LightDirection');
+    var u_LightPosition = gl.getUniformLocation(gl.program, 'u_LightPosition');
     var u_AmbientLight = gl.getUniformLocation(gl.program, 'u_AmbientLight');
 
     if (!u_MvpMatrix || !u_LightColor || !u_LightPosition || !u_AmbientLight || !u_NormalMatrix || !u_ModelMatrix) {
@@ -90,12 +90,12 @@ function main() {
 
 function initVertexBuffers(gl) {
     var vertices = new Float32Array([
-        1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0,
-        1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0,
-        1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0,
-        -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0,
-        -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0,
-        1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0
+        2.0, 2.0, 2.0, -2.0, 2.0, 2.0, -2.0, -2.0, 2.0, 2.0, -2.0, 2.0,
+        2.0, 2.0, 2.0, 2.0, -2.0, 2.0, 2.0, -2.0, -2.0, 2.0, 2.0, -2.0,
+        2.0, 2.0, 2.0, 2.0, 2.0, -2.0, -2.0, 2.0, -2.0, -2.0, 2.0, 2.0,
+        -2.0, 2.0, 2.0, -2.0, 2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, 2.0,
+        -2.0, -2.0, -2.0, 2.0, -2.0, -2.0, 2.0, -2.0, 2.0, -2.0, -2.0, 2.0,
+        2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, 2.0, -2.0, 2.0, 2.0, -2.0,
     ]);
 
     var colors = new Float32Array([
